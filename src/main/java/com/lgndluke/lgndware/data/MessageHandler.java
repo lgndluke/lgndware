@@ -5,12 +5,15 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 /**
  * This class handles operations with the "messages.yml" file.
@@ -20,6 +23,18 @@ public class MessageHandler extends AbstractFileHandler {
 
     public MessageHandler(JavaPlugin plugin) {
         super(plugin, "messages.yml");
+    }
+
+    @Override
+    public boolean initialize() {
+        FutureTask<Boolean> initAbstractFileHandler = new FutureTask<>(() -> {
+            createFile();
+            super.getFileConfig().load(super.getFile());;
+            super.getFileConfig().options().copyDefaults(true);
+            save();
+            return true;
+        });
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -56,6 +71,18 @@ public class MessageHandler extends AbstractFileHandler {
             return results;
         });
         return super.getAsyncExecutor().fetchExecutionResultAsList(super.getPlugin().getLogger(), getMsgAsComponentList, 10, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected void createFile() {
+        if(!super.getFile().exists()) {
+            try {
+                Files.copy(Objects.requireNonNull(super.getPlugin().getResource("messages.yml")), super.getFile().toPath());
+                super.getPlugin().getLogger().log(Level.INFO, "Successfully created " + super.getFile().getName() + " file.");
+            } catch (IOException io) {
+                super.getPlugin().getLogger().log(Level.SEVERE, "Copying defaults into 'messages.yml' failed!", io);
+            }
+        }
     }
 
 }

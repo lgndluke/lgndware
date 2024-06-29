@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -26,54 +27,56 @@ public abstract class AbstractFileHandler extends AbstractHandler {
         super(plugin);
         createDataFolder();
         this.file = new File(super.getPlugin().getDataFolder().getAbsoluteFile(), fileName);
+        this.fileConfig = YamlConfiguration.loadConfiguration(this.file);
     }
 
     /**
      * Creates the file.
      **/
     @Override
-    public void initialize() {
-        FutureTask<Void> initAbstractFileHandler = new FutureTask<>(() -> {
+    public boolean initialize() {
+        FutureTask<Boolean> initAbstractFileHandler = new FutureTask<>(() -> {
             createFile();
             this.fileConfig = YamlConfiguration.loadConfiguration(this.file);
             this.fileConfig.options().copyDefaults(true);
             save();
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(initAbstractFileHandler);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
-    public void terminate() {
+    public boolean terminate() {
         super.getAsyncExecutor().shutdown();
+        return true;
     }
 
     /**
      * Reloads the file.
      **/
-    public void reload() {
-        FutureTask<Void> reloadFile = new FutureTask<>(() -> {
+    public boolean reload() {
+        FutureTask<Boolean> reloadFile = new FutureTask<>(() -> {
             this.fileConfig = YamlConfiguration.loadConfiguration(this.file);
             this.fileConfig.options().copyDefaults(true);
             save();
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(reloadFile);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadFile, 10, TimeUnit.SECONDS);
     }
 
     /**
      * Saves the file.
      **/
-    public void save() {
-        FutureTask<Void> saveFile = new FutureTask<>(() -> {
+    public boolean save() {
+        FutureTask<Boolean> saveFile = new FutureTask<>(() -> {
             try {
                 this.fileConfig.save(this.file);
             } catch (IOException e) {
                 super.getPlugin().getLogger().log(Level.SEVERE, "Couldn't save data to " + this.file.getName(), e);
             }
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(saveFile);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveFile, 10, TimeUnit.SECONDS);
     }
 
     protected FileConfiguration getFileConfig() {
@@ -93,7 +96,7 @@ public abstract class AbstractFileHandler extends AbstractHandler {
         }
     }
 
-    private void createFile() {
+    protected void createFile() {
         if(!this.file.exists()) {
             try {
                 boolean fileCreated = this.file.createNewFile();

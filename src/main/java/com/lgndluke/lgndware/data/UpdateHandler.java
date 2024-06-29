@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -23,22 +24,26 @@ public class UpdateHandler extends AbstractHandler {
      * Asynchronously checks for updates.
      **/
     @Override
-    public void initialize() {
-        FutureTask<Void> initUpdateHandler = new FutureTask<>(() -> {
+    public boolean initialize() {
+        FutureTask<Boolean> initUpdateHandler = new FutureTask<>(() -> {
             String versionString = super.getPlugin().getPluginMeta().getVersion();
             checkForUpdates(version -> {
                 if(!versionString.equals(version)) {
                     super.getPlugin().getLogger().log(Level.WARNING, "A new Version of " + super.getPlugin().getName() + " is available. Consider updating!");
                 }
             });
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(initUpdateHandler);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initUpdateHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
-    public void terminate() {
-        super.getAsyncExecutor().shutdown();
+    public boolean terminate() {
+        if(!super.getAsyncExecutor().isShutdown()) {
+            super.getAsyncExecutor().shutdown();
+            return true;
+        }
+        return false;
     }
 
     /**

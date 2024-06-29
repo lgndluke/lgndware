@@ -12,8 +12,8 @@ public abstract class AbstractHandler {
         this.plugin = plugin;
     }
 
-    public abstract void initialize();
-    public abstract void terminate();
+    public abstract boolean initialize();
+    public abstract boolean terminate();
 
     protected JavaPlugin getPlugin() {
         return this.plugin;

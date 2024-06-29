@@ -22,36 +22,36 @@ public class ConfigHandler extends AbstractFileHandler {
      * Initializes the 'config.yml' file on server startup.
      **/
     @Override
-    public void initialize() {
-        FutureTask<Void> initConfigHandler = new FutureTask<>(() -> {
+    public boolean initialize() {
+        FutureTask<Boolean> initConfigHandler = new FutureTask<>(() -> {
             super.getPlugin().getConfig().options().copyDefaults(true);
             super.getPlugin().saveDefaultConfig();
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(initConfigHandler);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initConfigHandler, 10, TimeUnit.SECONDS);
     }
 
     /**
      * Reloads the 'config.yml' file.
      **/
     @Override
-    public void reload() {
-        FutureTask<Void> reloadConfig = new FutureTask<>(() -> {
+    public boolean reload() {
+        FutureTask<Boolean> reloadConfig = new FutureTask<>(() -> {
             super.getPlugin().reloadConfig();
             super.getPlugin().getConfig().options().copyDefaults(true);
             super.getPlugin().saveConfig();
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(reloadConfig);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadConfig, 10, TimeUnit.SECONDS);
     }
 
     @Override
-    public void save() {
-        FutureTask<Void> saveConfig = new FutureTask<>(() -> {
+    public boolean save() {
+        FutureTask<Boolean> saveConfig = new FutureTask<>(() -> {
             super.getPlugin().saveConfig();
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(saveConfig);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveConfig, 10, TimeUnit.SECONDS);
     }
 
     /** Provides easy access to objects from the Plugins config.

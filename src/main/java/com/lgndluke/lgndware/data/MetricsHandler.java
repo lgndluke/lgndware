@@ -4,6 +4,7 @@ import com.lgndluke.lgndware.metrics.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 public class MetricsHandler extends AbstractHandler {
 
@@ -16,20 +17,30 @@ public class MetricsHandler extends AbstractHandler {
     }
 
     @Override
-    public void initialize() {
-        FutureTask<Void> initMetricsHandler = new FutureTask<>(() -> {
+    public boolean initialize() {
+        FutureTask<Boolean> initMetricsHandler = new FutureTask<>(() -> {
             this.metrics = new Metrics(super.getPlugin(), pluginID);
-            return null;
+            return true;
         });
-        super.getAsyncExecutor().execute(initMetricsHandler);
+        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initMetricsHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
-    public void terminate() {
-        if(this.metrics != null) {
+    public boolean terminate() {
+        if(this.metrics != null && !super.getAsyncExecutor().isShutdown()) {
             this.metrics.shutdown();
+            super.getAsyncExecutor().shutdown();
+            return true;
         }
-        super.getAsyncExecutor().shutdown();
+        if(this.metrics != null){
+            this.metrics.shutdown();
+            return true;
+        }
+        if(!super.getAsyncExecutor().isShutdown()) {
+            super.getAsyncExecutor().shutdown();
+            return true;
+        }
+        return false;
     }
 
 }
