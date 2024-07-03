@@ -34,16 +34,18 @@ public class UpdateHandler extends AbstractHandler {
             });
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initUpdateHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initUpdateHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
     public boolean terminate() {
-        if(!super.getAsyncExecutor().isShutdown()) {
-            super.getAsyncExecutor().shutdown();
-            return true;
+        if(!super.getDefaultAsyncExecutor().isShutdown()) {
+            super.getDefaultAsyncExecutor().shutdown();
         }
-        return false;
+        if(!super.getScheduledAsyncExecutor().isShutdown()) {
+            super.getScheduledAsyncExecutor().shutdown();
+        }
+        return true;
     }
 
     /**

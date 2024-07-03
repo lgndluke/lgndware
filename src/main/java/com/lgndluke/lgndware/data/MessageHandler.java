@@ -34,7 +34,7 @@ public class MessageHandler extends AbstractFileHandler {
             save();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -44,7 +44,7 @@ public class MessageHandler extends AbstractFileHandler {
      **/
     public String getMessageAsString(String value) {
         RunnableFuture<String> getMsgAsString = new FutureTask<>(() -> PlainTextComponentSerializer.plainText().serialize(getMessageAsComponent(value)));
-        return super.getAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsString, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsString, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -54,7 +54,7 @@ public class MessageHandler extends AbstractFileHandler {
      **/
     public Component getMessageAsComponent(String value) {
         RunnableFuture<Component> getMsgAsComponent = new FutureTask<>(() -> MiniMessage.miniMessage().deserialize(Objects.requireNonNull(super.getFileConfig().getString(value))));
-        return super.getAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsComponent, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsComponent, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -70,7 +70,7 @@ public class MessageHandler extends AbstractFileHandler {
             }
             return results;
         });
-        return super.getAsyncExecutor().fetchExecutionResultAsList(super.getPlugin().getLogger(), getMsgAsComponentList, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResultAsList(super.getPlugin().getLogger(), getMsgAsComponentList, 10, TimeUnit.SECONDS);
     }
 
     @Override

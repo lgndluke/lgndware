@@ -30,33 +30,25 @@ public abstract class AbstractDatabaseHandler extends AbstractHandler {
             createTables();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractDatabaseHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractDatabaseHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
     public boolean terminate() {
-        if(dbCon != null && !super.getAsyncExecutor().isShutdown()) {
-            try {
+        try {
+            if(!dbCon.isClosed()) {
                 dbCon.close();
-                super.getAsyncExecutor().shutdown();
-                return true;
-            } catch (SQLException se) {
-                super.getPlugin().getLogger().log(Level.SEVERE, "Error whilst trying to close database connection!", se);
             }
+        } catch (SQLException se) {
+            super.getPlugin().getLogger().log(Level.SEVERE, "An error occurred, whilst trying to close database connection!", se);
         }
-        if(dbCon != null) {
-            try {
-                dbCon.close();
-                return true;
-            } catch (SQLException se) {
-                super.getPlugin().getLogger().log(Level.SEVERE, "Error whilst trying to close database connection!", se);
-            }
+        if(!super.getDefaultAsyncExecutor().isShutdown()) {
+            super.getDefaultAsyncExecutor().shutdown();
         }
-        if(!super.getAsyncExecutor().isShutdown()){
-            super.getAsyncExecutor().shutdown();
-            return true;
+        if(!super.getScheduledAsyncExecutor().isShutdown()) {
+            super.getScheduledAsyncExecutor().shutdown();
         }
-        return false;
+        return true;
     }
 
     protected abstract void createDatabase();

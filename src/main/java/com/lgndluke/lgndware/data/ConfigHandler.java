@@ -28,7 +28,7 @@ public class ConfigHandler extends AbstractFileHandler {
             super.getPlugin().saveDefaultConfig();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initConfigHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initConfigHandler, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -42,7 +42,7 @@ public class ConfigHandler extends AbstractFileHandler {
             super.getPlugin().saveConfig();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadConfig, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadConfig, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ConfigHandler extends AbstractFileHandler {
             super.getPlugin().saveConfig();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveConfig, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveConfig, 10, TimeUnit.SECONDS);
     }
 
     /** Provides easy access to objects from the Plugins config.
@@ -61,7 +61,7 @@ public class ConfigHandler extends AbstractFileHandler {
      **/
     public Object get(String value) throws NullPointerException {
         FutureTask<Object> getConfigValue = new FutureTask<>(() -> super.getPlugin().getConfig().get(value));
-        return super.getAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getConfigValue, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getConfigValue, 10, TimeUnit.SECONDS);
     }
 
 }

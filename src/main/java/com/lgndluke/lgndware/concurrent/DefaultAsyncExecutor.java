@@ -7,7 +7,7 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AsyncExecutor {
+public class DefaultAsyncExecutor {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
@@ -20,13 +20,13 @@ public class AsyncExecutor {
         try {
             return task.get(timeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "Task timed out.", te);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task timed out.", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "Task was interrupted", ie);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task was interrupted", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "Task execution failed", ee);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task execution failed", ee);
         }
         return false;
     }
@@ -36,13 +36,13 @@ public class AsyncExecutor {
         try {
             return task.get(timeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "Task timed out.", te);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task timed out.", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "Task was interrupted", ie);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task was interrupted", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "Task execution failed", ee);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task execution failed", ee);
         }
         return null;
     }
@@ -52,13 +52,13 @@ public class AsyncExecutor {
         try {
             return task.get(timeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "Task timed out.", te);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task timed out.", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "Task was interrupted", ie);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task was interrupted", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "Task execution failed", ee);
+            logger.log(Level.SEVERE, "[LGNDWARE]: Task execution failed", ee);
         }
         return null;
     }

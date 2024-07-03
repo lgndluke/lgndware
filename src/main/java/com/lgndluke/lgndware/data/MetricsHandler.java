@@ -22,25 +22,21 @@ public class MetricsHandler extends AbstractHandler {
             this.metrics = new Metrics(super.getPlugin(), pluginID);
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initMetricsHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initMetricsHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
     public boolean terminate() {
-        if(this.metrics != null && !super.getAsyncExecutor().isShutdown()) {
+        if(this.metrics != null) {
             this.metrics.shutdown();
-            super.getAsyncExecutor().shutdown();
-            return true;
         }
-        if(this.metrics != null){
-            this.metrics.shutdown();
-            return true;
+        if(!super.getDefaultAsyncExecutor().isShutdown()) {
+            super.getDefaultAsyncExecutor().shutdown();
         }
-        if(!super.getAsyncExecutor().isShutdown()) {
-            super.getAsyncExecutor().shutdown();
-            return true;
+        if(!super.getScheduledAsyncExecutor().isShutdown()) {
+            super.getScheduledAsyncExecutor().shutdown();
         }
-        return false;
+        return true;
     }
 
 }

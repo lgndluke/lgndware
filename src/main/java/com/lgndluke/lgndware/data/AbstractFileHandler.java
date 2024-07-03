@@ -42,12 +42,17 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             save();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
     }
 
     @Override
     public boolean terminate() {
-        super.getAsyncExecutor().shutdown();
+        if(!super.getDefaultAsyncExecutor().isShutdown()) {
+            super.getDefaultAsyncExecutor().shutdown();
+        }
+        if(!super.getScheduledAsyncExecutor().isShutdown()) {
+            super.getScheduledAsyncExecutor().shutdown();
+        }
         return true;
     }
 
@@ -61,7 +66,7 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             save();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadFile, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadFile, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -76,7 +81,7 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             }
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveFile, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveFile, 10, TimeUnit.SECONDS);
     }
 
     protected FileConfiguration getFileConfig() {
