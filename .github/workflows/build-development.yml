@@ -83,26 +83,6 @@ jobs:
           name: lgndware-1.0.0-PAPER-1.21-Dev
           path: release
 
-      - name: Get 1.20 .jar file name
-        id: get_jar_name_1_20
-        run: |
-          JAR_PATH_1_20=$(ls release/lgndware-1.0.0-PAPER-1.20.jar)
-          JAR_NAME_1_20=$(basename $JAR_PATH)
-          JAR_BASENAME_1_20=${JAR_NAME_1_20%.jar}
-          echo "JAR_PATH_1_20=${JAR_PATH_1_20}" >> $GITHUB_ENV
-          echo "JAR_NAME_1_20=${JAR_NAME_1_20}" >> $GITHUB_ENV
-          echo "JAR_BASENAME_1_20=${JAR_BASENAME_1_20}" >> $GITHUB_ENV
-
-      - name: Get 1.21 .jar file name
-        id: get_jar_name_1_21
-        run: |
-          JAR_PATH_1_21=$(ls release/lgndware-1.0.0-PAPER-1.21.jar)
-          JAR_NAME_1_21=$(basename $JAR_PATH)
-          JAR_BASENAME_1_21=${JAR_NAME_1_21%.jar}
-          echo "JAR_PATH_1_21=${JAR_PATH_1_21}" >> $GITHUB_ENV
-          echo "JAR_NAME_1_21=${JAR_NAME_1_21}" >> $GITHUB_ENV
-          echo "JAR_BASENAME_1_21=${JAR_BASENAME_1_21}" >> $GITHUB_ENV
-
       - name: Create release.
         id: create_release
         uses: actions/create-release@v1
@@ -114,6 +94,16 @@ jobs:
           draft: false
           prerelease: true
 
+      - name: Get 1.20 .jar file name
+        id: get_jar_name_1_20
+        run: |
+          JAR_PATH=$(ls release/lgndware-1.0.0-PAPER-1.20.jar)
+          JAR_NAME=$(basename $JAR_PATH)
+          JAR_BASENAME=${JAR_NAME%.jar}
+          echo "JAR_PATH=${JAR_PATH}" >> $GITHUB_ENV
+          echo "JAR_NAME=${JAR_NAME}" >> $GITHUB_ENV
+          echo "JAR_BASENAME=${JAR_BASENAME}" >> $GITHUB_ENV
+
       - name: Upload 1.20 .jar to release.
         uses: actions/upload-release-asset@v1
         env:
@@ -123,6 +113,16 @@ jobs:
           asset_path: ${{ env.JAR_PATH_1_20 }}
           asset_name: ${{ env.JAR_NAME_1_20 }}
           asset_content_type: application/java-archive
+
+      - name: Get 1.21 .jar file name
+        id: get_jar_name_1_21
+        run: |
+          JAR_PATH=$(ls release/lgndware-1.0.0-PAPER-1.21.jar)
+          JAR_NAME=$(basename $JAR_PATH)
+          JAR_BASENAME=${JAR_NAME%.jar}
+          echo "JAR_PATH=${JAR_PATH}" >> $GITHUB_ENV
+          echo "JAR_NAME=${JAR_NAME}" >> $GITHUB_ENV
+          echo "JAR_BASENAME=${JAR_BASENAME}" >> $GITHUB_ENV
 
       - name: Upload 1.21 .jar to release.
         uses: actions/upload-release-asset@v1
