@@ -26,20 +26,30 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom-1-20.xml', '**/pom-1-21.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Install dependencies.
-        run: mvn install
+      - name: Install dependencies for pom-1-20.xml.
+        run: mvn install -f pom-1-20.xml
 
-      - name: Build project.
-        run: mvn -B package --file pom.xml
+      - name: Build project for pom-1-20.xml.
+        run: mvn -B package -f pom-1-20.xml
 
-      - name: Create release directory and move .jar into it.
+      - name: Move first JAR into release directory.
         run: |
           mkdir -p release
-          mv target/lgndware*.jar release/
+          mv target/*-1.20.jar release/
+
+      - name: Install dependencies for pom-1-21.xml
+        run: mvn install -f pom-1-21.xml
+
+      - name: Build project for pom-1-21.xml
+        run: mvn -B package -f pom-1-21.xml
+
+      - name: Move second JAR into release directory.
+        run: |
+          mv target/*-1.21.jar release/
 
       - name: Upload .jar file as an artifact.
         uses: actions/upload-artifact@v4

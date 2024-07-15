@@ -6,13 +6,13 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This is a config related utility Class.
+ * Utility class for handling configuration related operations.
  * @author lgndluke
  **/
 public class ConfigHandler extends AbstractFileHandler {
 
     /**
-     * @param plugin — the JavaPlugin that registers the ConfigHandler.
+     * @param plugin The JavaPlugin instance associated with this ConfigHandler.
      **/
     public ConfigHandler(JavaPlugin plugin) {
         super(plugin, "config.yml");
@@ -20,6 +20,7 @@ public class ConfigHandler extends AbstractFileHandler {
 
     /**
      * Initializes the 'config.yml' file on server startup.
+     * @return True, if the initialization was successful. Otherwise, false.
      **/
     @Override
     public boolean initialize() {
@@ -32,7 +33,8 @@ public class ConfigHandler extends AbstractFileHandler {
     }
 
     /**
-     * Reloads the 'config.yml' file.
+     * Asynchronously reloads the 'config.yml' file from disk.
+     * @return True, if the reload was successful. Otherwise, false.
      **/
     @Override
     public boolean reload() {
@@ -45,6 +47,10 @@ public class ConfigHandler extends AbstractFileHandler {
         return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadConfig, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Asynchronously saves the 'config.yml' file to disk.
+     * @return True, if the save operation was successful. Otherwise, false.
+     **/
     @Override
     public boolean save() {
         FutureTask<Boolean> saveConfig = new FutureTask<>(() -> {
@@ -54,10 +60,12 @@ public class ConfigHandler extends AbstractFileHandler {
         return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveConfig, 10, TimeUnit.SECONDS);
     }
 
-    /** Provides easy access to objects from the Plugins config.
-     * @param value — has to be set inside the 'config.yml' file.
-     * @return requested Object from 'config.yml' file.
-     * @throws NullPointerException if value isn't set inside 'config.yml'
+    /**
+     * Retrieves a configuration value from 'config.yml'
+     *
+     * @param value The key for the configuration value.
+     * @return The requested Object from 'config.yml'.
+     * @throws NullPointerException If the value isn't set inside 'config.yml'.
      **/
     public Object get(String value) throws NullPointerException {
         FutureTask<Object> getConfigValue = new FutureTask<>(() -> super.getPlugin().getConfig().get(value));

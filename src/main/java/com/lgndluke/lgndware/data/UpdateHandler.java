@@ -11,17 +11,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+/**
+ * Utility class for handling update checking operations.
+ * @author lgndluke
+ **/
 public class UpdateHandler extends AbstractHandler {
 
     private final int resourceID;
 
+    /**
+     * @param plugin The JavaPlugin instance associated with this UpdateHandler.
+     * @param resourceID The Plugin's ressource ID from SpigotMC.
+     **/
     public UpdateHandler(JavaPlugin plugin, int resourceID) {
         super(plugin);
         this.resourceID = resourceID;
     }
 
     /**
-     * Asynchronously checks for updates.
+     * Asynchronously checks for updates using SpigotMC's API.
+     * @return True, if the update check executed successfully. Otherwise, false.
      **/
     @Override
     public boolean initialize() {
@@ -37,19 +46,20 @@ public class UpdateHandler extends AbstractHandler {
         return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initUpdateHandler, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Terminates the UpdateHandler.
+     * @return True, if the termination was successful. Otherwise, false.
+     **/
     @Override
     public boolean terminate() {
-        if(!super.getDefaultAsyncExecutor().isShutdown()) {
-            super.getDefaultAsyncExecutor().shutdown();
-        }
-        if(!super.getScheduledAsyncExecutor().isShutdown()) {
-            super.getScheduledAsyncExecutor().shutdown();
-        }
+        super.getDefaultAsyncExecutor().shutdown();
+        super.getScheduledAsyncExecutor().shutdown();
         return true;
     }
 
     /**
-     * Fetches the current version String from SpigotMC's API.
+     * Asynchronously fetches the current version as String from SpigotMC's API.
+     * @param consumer Consumer function to handle the fetched version string.
      **/
     private void checkForUpdates(Consumer<String> consumer) {
         super.getPlugin().getServer().getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
