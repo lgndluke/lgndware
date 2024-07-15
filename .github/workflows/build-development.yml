@@ -110,8 +110,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.JAR_PATH_1_20 }}
-          asset_name: ${{ env.JAR_NAME_1_20 }}
+          asset_path: ${{ env.JAR_PATH }}
+          asset_name: ${{ env.JAR_NAME }}
           asset_content_type: application/java-archive
 
       - name: Get 1.21 .jar file name
@@ -130,6 +130,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.JAR_PATH_1_21 }}
-          asset_name: ${{ env.JAR_NAME_1_21 }}
+          asset_path: ${{ env.JAR_PATH }}
+          asset_name: ${{ env.JAR_NAME }}
           asset_content_type: application/java-archive
