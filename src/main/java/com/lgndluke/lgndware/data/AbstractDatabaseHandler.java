@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
- *
+ * Abstract base class for database implementations.
  * @author lgndluke
  **/
 public abstract class AbstractDatabaseHandler extends AbstractHandler {
@@ -18,10 +18,17 @@ public abstract class AbstractDatabaseHandler extends AbstractHandler {
     private final String dbPath = super.getPlugin().getDataFolder().getAbsolutePath() + "/" + super.getPlugin().getName() + ".db";
     private Connection dbCon;
 
+    /**
+     * @param plugin The JavaPlugin instance associated with this AbstractDatabaseHandler.
+     **/
     protected AbstractDatabaseHandler(JavaPlugin plugin) {
         super(plugin);
     }
 
+    /**
+     * Asynchronously initializes the database.
+     * @return True, if the initialization was successful. Otherwise, false.
+     **/
     @Override
     public boolean initialize() {
         FutureTask<Boolean> initAbstractDatabaseHandler = new FutureTask<>(() -> {
@@ -30,38 +37,40 @@ public abstract class AbstractDatabaseHandler extends AbstractHandler {
             createTables();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractDatabaseHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractDatabaseHandler, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Terminates the AbstractDatabaseHandler.
+     * @return True, if the termination was successful. Otherwise, false.
+     **/
     @Override
     public boolean terminate() {
-        if(dbCon != null && !super.getAsyncExecutor().isShutdown()) {
-            try {
+        try {
+            if(!dbCon.isClosed()) {
                 dbCon.close();
-                super.getAsyncExecutor().shutdown();
-                return true;
-            } catch (SQLException se) {
-                super.getPlugin().getLogger().log(Level.SEVERE, "Error whilst trying to close database connection!", se);
             }
+        } catch (SQLException se) {
+            super.getPlugin().getLogger().log(Level.SEVERE, "An error occurred, whilst trying to close the database connection!", se);
         }
-        if(dbCon != null) {
-            try {
-                dbCon.close();
-                return true;
-            } catch (SQLException se) {
-                super.getPlugin().getLogger().log(Level.SEVERE, "Error whilst trying to close database connection!", se);
-            }
-        }
-        if(!super.getAsyncExecutor().isShutdown()){
-            super.getAsyncExecutor().shutdown();
-            return true;
-        }
-        return false;
+        super.getDefaultAsyncExecutor().shutdown();
+        super.getScheduledAsyncExecutor().shutdown();
+        return true;
     }
 
+    /**
+     * Abstract method to be implemented by subclasses for creating the database.
+     **/
     protected abstract void createDatabase();
+
+    /**
+     * Abstract method to be implemented by subclasses for creating database tables.
+     **/
     protected abstract void createTables();
 
+    /**
+     * This method establishes a connection to the database.
+     **/
     protected void connect() {
         String dbURL = "jdbc:sqlite:" + dbPath;
         try {
@@ -74,9 +83,16 @@ public abstract class AbstractDatabaseHandler extends AbstractHandler {
         }
     }
 
+    /**
+     * @return The file path of the database.
+     **/
     protected String getDbPath() {
         return this.dbPath;
     }
+
+    /**
+     * @return The database connection.
+     **/
     protected Connection getDbCon() {
         return this.dbCon;
     }

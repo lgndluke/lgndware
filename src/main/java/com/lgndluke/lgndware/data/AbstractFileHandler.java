@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
- * This abstract class provides functionality for file handler classes.
+ * Abstract base class for file implementations.
  * @author lgndluke
  **/
 public abstract class AbstractFileHandler extends AbstractHandler {
@@ -20,8 +20,8 @@ public abstract class AbstractFileHandler extends AbstractHandler {
     private FileConfiguration fileConfig;
 
     /**
-     * @param plugin the plugin the file belongs to.
-     * @param fileName the file name including the file type.
+     * @param plugin The JavaPlugin instance associated with this AbstractFileHandler.
+     * @param fileName The file name including filetype.
      **/
     protected AbstractFileHandler(JavaPlugin plugin, String fileName) {
         super(plugin);
@@ -31,7 +31,8 @@ public abstract class AbstractFileHandler extends AbstractHandler {
     }
 
     /**
-     * Creates the file.
+     * Asynchronously initializes the file.
+     * @return True, if the initialization was successful. Otherwise, false.
      **/
     @Override
     public boolean initialize() {
@@ -39,20 +40,25 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             createFile();
             this.fileConfig = YamlConfiguration.loadConfiguration(this.file);
             this.fileConfig.options().copyDefaults(true);
-            save();
-            return true;
+            return save();
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Terminates the AbstractFileHandler.
+     * @return True, if the termination was successful. Otherwise, false.
+     **/
     @Override
     public boolean terminate() {
-        super.getAsyncExecutor().shutdown();
+        super.getDefaultAsyncExecutor().shutdown();
+        super.getScheduledAsyncExecutor().shutdown();
         return true;
     }
 
     /**
-     * Reloads the file.
+     * Asynchronously reloads the file.
+     * @return True, if the file was reloaded successfully. Otherwise, false.
      **/
     public boolean reload() {
         FutureTask<Boolean> reloadFile = new FutureTask<>(() -> {
@@ -61,11 +67,12 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             save();
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadFile, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), reloadFile, 10, TimeUnit.SECONDS);
     }
 
     /**
-     * Saves the file.
+     * Asynchronously saves the file.
+     * @return True, if the file was saved successfully. Otherwise, false.
      **/
     public boolean save() {
         FutureTask<Boolean> saveFile = new FutureTask<>(() -> {
@@ -76,17 +83,26 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             }
             return true;
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveFile, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), saveFile, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * @return The AbstractFileHandlers file configuration object.
+     **/
     protected FileConfiguration getFileConfig() {
         return this.fileConfig;
     }
 
+    /**
+     * @return The AbstractFileHandlers file object.
+     **/
     protected File getFile() {
         return this.file;
     }
 
+    /**
+     * This method creates the Plugin folder inside the Servers plugins folder.
+     **/
     private void createDataFolder() {
         if(!super.getPlugin().getDataFolder().exists()) {
             boolean isCreated = super.getPlugin().getDataFolder().mkdir();
@@ -96,6 +112,9 @@ public abstract class AbstractFileHandler extends AbstractHandler {
         }
     }
 
+    /**
+     * This method creates the file itself.
+     **/
     protected void createFile() {
         if(!this.file.exists()) {
             try {

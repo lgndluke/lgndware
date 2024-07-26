@@ -16,51 +16,57 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
- * This class handles operations with the "messages.yml" file.
+ * Utility class for handling message related operations.
  * @author lgndluke
  **/
 public class MessageHandler extends AbstractFileHandler {
 
+    /**
+     * @param plugin The JavaPlugin instance associated with this MessageHandler.
+     **/
     public MessageHandler(JavaPlugin plugin) {
         super(plugin, "messages.yml");
     }
 
+    /**
+     * Initializes the 'messages.yml' file on server startup.
+     * @return True, if the initialization was successful. Otherwise, false.
+     **/
     @Override
     public boolean initialize() {
         FutureTask<Boolean> initAbstractFileHandler = new FutureTask<>(() -> {
             createFile();
             super.getFileConfig().load(super.getFile());;
             super.getFileConfig().options().copyDefaults(true);
-            save();
-            return true;
+            return save();
         });
-        return super.getAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().executeFuture(super.getPlugin().getLogger(), initAbstractFileHandler, 10, TimeUnit.SECONDS);
     }
 
     /**
-     * Asynchronous getter for String value from 'messages.yml' file.
-     * @param value — holding the message requested from 'message.yml' file.
-     * @return requested message value as String.
+     * Asynchronously retrieves a message as String from the 'messages.yml' file.
+     * @param value The key for the requested message.
+     * @return The requested message value as String.
      **/
     public String getMessageAsString(String value) {
         RunnableFuture<String> getMsgAsString = new FutureTask<>(() -> PlainTextComponentSerializer.plainText().serialize(getMessageAsComponent(value)));
-        return super.getAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsString, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsString, 10, TimeUnit.SECONDS);
     }
 
     /**
-     * Asynchronous getter for String value from 'messages.yml' file as Component.
-     * @param value — holding the message requested from 'message.yml' file.
-     * @return requested message value as Component.
+     * Asynchronously retrieves a message as Component from the 'messages.yml' file.
+     * @param value The key for the requested message.
+     * @return The requested message value as Component.
      **/
     public Component getMessageAsComponent(String value) {
         RunnableFuture<Component> getMsgAsComponent = new FutureTask<>(() -> MiniMessage.miniMessage().deserialize(Objects.requireNonNull(super.getFileConfig().getString(value))));
-        return super.getAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsComponent, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResult(super.getPlugin().getLogger(), getMsgAsComponent, 10, TimeUnit.SECONDS);
     }
 
     /**
-     * Asynchronous getter for String values from 'messages.yml' file that are stored as lists.
-     * @param value — holding the message requested from 'message.yml' file.
-     * @return requested message value as Component array list.
+     * Asynchronously retrieves a List of messages as Components from the 'messages.yml' file.
+     * @param value The key for the requested list of messages.
+     * @return The requested list of messages.
      **/
     public List<Component> getMessagesAsComponentList(String value) {
         RunnableFuture<List<Component>> getMsgAsComponentList = new FutureTask<>(() -> {
@@ -70,9 +76,12 @@ public class MessageHandler extends AbstractFileHandler {
             }
             return results;
         });
-        return super.getAsyncExecutor().fetchExecutionResultAsList(super.getPlugin().getLogger(), getMsgAsComponentList, 10, TimeUnit.SECONDS);
+        return super.getDefaultAsyncExecutor().fetchExecutionResultAsList(super.getPlugin().getLogger(), getMsgAsComponentList, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Creates the 'messages.yml' file.
+     **/
     @Override
     protected void createFile() {
         if(!super.getFile().exists()) {

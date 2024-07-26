@@ -3,10 +3,10 @@ name: build-latest
 on:
   push:
     branches:
-      - master
+      - development
   pull_request:
     branches:
-      - master
+      - development
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
       - name: Upload 1.20 JAR file as an artifact.
         uses: actions/upload-artifact@v4
         with:
-          name: lgndware-1.0.0-PAPER-1.20
+          name: lgndware-1.0.0-PAPER-1.20-Dev
           path: release/*.jar
 
       - name: Install dependencies for pom-1-21.xml
@@ -60,7 +60,7 @@ jobs:
       - name: Upload .jar file as an artifact.
         uses: actions/upload-artifact@v4
         with:
-          name: lgndware-1.0.0-PAPER-1.21
+          name: lgndware-1.0.0-PAPER-1.21-Dev
           path: release/*.jar
 
   deploy:
@@ -74,13 +74,13 @@ jobs:
       - name: Download 1.20 .jar artifact.
         uses: actions/download-artifact@v4
         with:
-          name: lgndware-1.0.0-PAPER-1.20
+          name: lgndware-1.0.0-PAPER-1.20-Dev
           path: release
 
       - name: Download 1.21 .jar artifact.
         uses: actions/download-artifact@v4
         with:
-          name: lgndware-1.0.0-PAPER-1.21
+          name: lgndware-1.0.0-PAPER-1.21-Dev
           path: release
 
       - name: Get 1.20 .jar file name
@@ -102,7 +102,7 @@ jobs:
           tag_name: ${{ env.JAR_BASENAME }}
           release_name: ${{ env.JAR_BASENAME }}
           draft: false
-          prerelease: false
+          prerelease: true
 
       - name: Upload 1.20 .jar to release.
         uses: actions/upload-release-asset@v1
