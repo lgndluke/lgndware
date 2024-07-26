@@ -40,13 +40,13 @@ public class ScheduledAsyncExecutor {
         try {
             return task.get(delay+additionalTimeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Scheduled-Task timed out!", te);
+            logger.log(Level.SEVERE, "Scheduled-Task timed out!", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "[LGNDWARE]: Scheduled-Task was interrupted!", ie);
+            logger.log(Level.SEVERE, "Scheduled-Task was interrupted!", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Scheduled-Task execution failed!", ee);
+            logger.log(Level.SEVERE, "Scheduled-Task execution failed!", ee);
         }
         return false;
     }

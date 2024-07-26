@@ -36,13 +36,13 @@ public class DefaultAsyncExecutor {
         try {
             return task.get(timeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task timed out!", te);
+            logger.log(Level.SEVERE, "Default-Task timed out!", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task was interrupted!", ie);
+            logger.log(Level.SEVERE, "Default-Task was interrupted!", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task execution failed!", ee);
+            logger.log(Level.SEVERE, "Default-Task execution failed!", ee);
         }
         return false;
     }
@@ -62,13 +62,13 @@ public class DefaultAsyncExecutor {
         try {
             return task.get(timeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task timed out.", te);
+            logger.log(Level.SEVERE, "Default-Task timed out.", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task was interrupted", ie);
+            logger.log(Level.SEVERE, "Default-Task was interrupted", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task execution failed", ee);
+            logger.log(Level.SEVERE, "Default-Task execution failed", ee);
         }
         return null;
     }
@@ -87,13 +87,13 @@ public class DefaultAsyncExecutor {
         try {
             return task.get(timeout, unit);
         } catch (TimeoutException te) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task timed out.", te);
+            logger.log(Level.SEVERE, "Default-Task timed out.", te);
             task.cancel(true);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task was interrupted", ie);
+            logger.log(Level.SEVERE, "Default-Task was interrupted", ie);
         } catch (ExecutionException ee) {
-            logger.log(Level.SEVERE, "[LGNDWARE]: Default-Task execution failed", ee);
+            logger.log(Level.SEVERE, "Default-Task execution failed", ee);
         }
         return null;
     }

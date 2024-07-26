@@ -1,8 +1,13 @@
 package com.lgndluke.lgndware.ui;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 /**
  * Abstract base class for Inventory generation.
@@ -30,9 +35,28 @@ public abstract class AbstractInventory {
     protected abstract boolean initialize();
 
     /**
+     * @return The constructed ItemStack object.
+     **/
+    protected ItemStack constructItem(Material material, Component itemName, List<Component> loreList) {
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(itemName);
+        meta.lore(loreList);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    /**
+     * @return The JavaPlugin instance.
+     **/
+    protected JavaPlugin getPlugin() {
+        return this.plugin;
+    }
+
+    /**
      * @return The Inventory instance.
      **/
-    public Inventory getInventory() {
+    protected Inventory getInventory() {
         return this.inventory;
     }
 

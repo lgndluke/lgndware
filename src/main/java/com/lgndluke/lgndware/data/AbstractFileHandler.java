@@ -107,7 +107,7 @@ public abstract class AbstractFileHandler extends AbstractHandler {
         if(!super.getPlugin().getDataFolder().exists()) {
             boolean isCreated = super.getPlugin().getDataFolder().mkdir();
             if(isCreated) {
-                super.getPlugin().getLogger().log(Level.INFO, "[LGNDWARE]: Successfully created " + super.getPlugin().getName() + " folder inside plugins folder.");
+                super.getPlugin().getLogger().log(Level.INFO, "Successfully created " + super.getPlugin().getName() + " folder inside plugins folder.");
             }
         }
     }
@@ -120,10 +120,10 @@ public abstract class AbstractFileHandler extends AbstractHandler {
             try {
                 boolean fileCreated = this.file.createNewFile();
                 if(fileCreated) {
-                    super.getPlugin().getLogger().log(Level.INFO, "[LGNDWARE]: Successfully created " + this.file.getName() + " file.");
+                    super.getPlugin().getLogger().log(Level.INFO, "Successfully created " + this.file.getName() + " file.");
                 }
             } catch (IOException e) {
-                super.getPlugin().getLogger().log(Level.SEVERE, "[LGNDWARE]: Could not create " + this.file.getName() + " file!", e);
+                super.getPlugin().getLogger().log(Level.SEVERE, "Could not create " + this.file.getName() + " file!", e);
             }
         }
     }

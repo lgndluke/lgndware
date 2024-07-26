@@ -51,7 +51,7 @@ public abstract class AbstractDatabaseHandler extends AbstractHandler {
                 dbCon.close();
             }
         } catch (SQLException se) {
-            super.getPlugin().getLogger().log(Level.SEVERE, "[LGNDWARE]: An error occurred, whilst trying to close the database connection!", se);
+            super.getPlugin().getLogger().log(Level.SEVERE, "An error occurred, whilst trying to close the database connection!", se);
         }
         super.getDefaultAsyncExecutor().shutdown();
         super.getScheduledAsyncExecutor().shutdown();
@@ -76,10 +76,10 @@ public abstract class AbstractDatabaseHandler extends AbstractHandler {
         try {
             this.dbCon = DriverManager.getConnection(dbURL);
             if(this.dbCon != null) {
-                super.getPlugin().getLogger().log(Level.INFO, "[LGNDWARE]: Successfully connected to Database.");
+                super.getPlugin().getLogger().log(Level.INFO, "Successfully connected to Database.");
             }
         } catch (Exception e) {
-            super.getPlugin().getLogger().log(Level.SEVERE, "[LGNDWARE]: Couldn't connect to Database", e);
+            super.getPlugin().getLogger().log(Level.SEVERE, "Couldn't connect to Database", e);
         }
     }
 

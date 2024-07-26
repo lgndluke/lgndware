@@ -87,9 +87,9 @@ public class MessageHandler extends AbstractFileHandler {
         if(!super.getFile().exists()) {
             try {
                 Files.copy(Objects.requireNonNull(super.getPlugin().getResource("messages.yml")), super.getFile().toPath());
-                super.getPlugin().getLogger().log(Level.INFO, "[LGNDWARE]: Successfully created " + super.getFile().getName() + " file.");
+                super.getPlugin().getLogger().log(Level.INFO, "Successfully created " + super.getFile().getName() + " file.");
             } catch (IOException io) {
-                super.getPlugin().getLogger().log(Level.SEVERE, "[LGNDWARE]: Copying defaults into 'messages.yml' failed!", io);
+                super.getPlugin().getLogger().log(Level.SEVERE, "Copying defaults into 'messages.yml' failed!", io);
             }
         }
     }
